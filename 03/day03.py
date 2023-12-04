@@ -26,7 +26,6 @@ class GondolaLiftEngine:
                     self.star_locations.append((i,j))
         self.gear_dict = {}
         
-        
     def return_number(self, loc1, loc2):
         return int(self.engine_schematic[loc1[0]][loc1[1]:loc2[1]+1])
     
