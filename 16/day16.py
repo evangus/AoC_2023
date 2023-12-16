@@ -3,9 +3,8 @@ sys.setrecursionlimit(10000)
 
 def read_input(filename, split = False, convert_to_int = False, sep = '\n'):
     f = open(filename)
-    raw = f.read()[:-1]
+    data = f.read()[:-1]
     f.close()
-    data = raw
     if split:
         data = data.split(sep)
     if convert_to_int:
@@ -35,44 +34,45 @@ class Contraption:
         except KeyError:
             self.energized[location] = {direction}
         
-        #recursive
+        new_location = location + self.increment[direction]
+        
         if (((location // self.row_length == 0) & (direction == 'U')) 
             or ((location % self.row_length == 0) & (direction == 'L'))
             or ((location // self.row_length == self.rows_count - 1) & (direction == 'D'))
             or ((location % self.row_length == self.row_length - 2) & (direction == 'R'))):
             return
-        elif self.map[location + self.increment[direction]] == '.':
-            self.launch_beam(location + self.increment[direction], direction)
-        elif self.map[location + self.increment[direction]] == '-':
+        elif self.map[new_location] == '.':
+            self.launch_beam(new_location, direction)
+        elif self.map[new_location] == '-':
             if direction in 'LR':
-                self.launch_beam(location + self.increment[direction], direction)
+                self.launch_beam(new_location, direction)
             else:
-                self.launch_beam(location + self.increment[direction], 'L')
-                self.launch_beam(location + self.increment[direction], 'R')
-        elif self.map[location + self.increment[direction]] == '|':
+                self.launch_beam(new_location, 'L')
+                self.launch_beam(new_location, 'R')
+        elif self.map[new_location] == '|':
             if direction in 'UD':
-                self.launch_beam(location + self.increment[direction], direction)
+                self.launch_beam(new_location, direction)
             else:
-                self.launch_beam(location + self.increment[direction], 'U')
-                self.launch_beam(location + self.increment[direction], 'D')
-        elif self.map[location + self.increment[direction]] == '/':
+                self.launch_beam(new_location, 'U')
+                self.launch_beam(new_location, 'D')
+        elif self.map[new_location] == '/':
             if direction == 'U':
-                self.launch_beam(location + self.increment[direction], 'R')
+                self.launch_beam(new_location, 'R')
             elif direction == 'D':
-                self.launch_beam(location + self.increment[direction], 'L')
+                self.launch_beam(new_location, 'L')
             elif direction == 'L':
-                self.launch_beam(location + self.increment[direction], 'D')
+                self.launch_beam(new_location, 'D')
             elif direction == 'R':
-                self.launch_beam(location + self.increment[direction], 'U')
-        elif self.map[location + self.increment[direction]] == '\\':
+                self.launch_beam(new_location, 'U')
+        elif self.map[new_location] == '\\':
             if direction == 'U':
-                self.launch_beam(location + self.increment[direction], 'L')
+                self.launch_beam(new_location, 'L')
             elif direction == 'D':
-                self.launch_beam(location + self.increment[direction], 'R')
+                self.launch_beam(new_location, 'R')
             elif direction == 'L':
-                self.launch_beam(location + self.increment[direction], 'U')
+                self.launch_beam(new_location, 'U')
             elif direction == 'R':
-                self.launch_beam(location + self.increment[direction], 'D')
+                self.launch_beam(new_location, 'D')
 
     def run_part1(self):
         self.launch_beam(0, 'R')
