@@ -72,6 +72,41 @@ class DigInstruction:
     def __init__(self, line):
         self.direction, self.length, self.color = line.split(' ')
         self.length = int(self.length)
-        
+
+
+class UnswappedDigInstruction:
+    def __init__(self, line):
+        line = line.split('#')[-1][:-1]
+        self.length = int(line[:-1],16)
+        self.direction = {'0':'R','1':'D','2':'L','3':'U'}[line[-1]]
+
+    def __repr__(self):
+        return f'{self.direction} {self.length}'
+
+
+class ExtraLargeLagoon:
+    def __init__(self, filename, not_extra = False):
+        if not_extra:
+            self.dig_instructions = [DigInstruction(i) for i in read_input(filename, split=True)]
+        else:
+            self.dig_instructions = [UnswappedDigInstruction(i) for i in read_input(filename, split=True)]
+        self.current = (0,0)
+        self.vertices = []
+        self.increment = {'U':(-1,0),'D':(1,0),'L':(0,-1),'R':(0,1)}
+        for instruction in self.dig_instructions:
+            self.vertices.append(self.current)
+            self.current = (self.current[0] + self.increment[instruction.direction][0] * instruction.length,
+                            self.current[1] + self.increment[instruction.direction][1] * instruction.length)
+            
+    def calc_shoelace(self):
+        double_area = 0
+        for i in range(len(self.vertices)):
+            x1,y1 = self.vertices[i-1]
+            x2,y2 = self.vertices[i]
+            #double_area += x1*y2 - y1*x2
+            double_area += (y1+y2)*(x1-x2)
+        return int(abs(double_area/2) + sum([i.length for i in self.dig_instructions])/2 + 1)
+
 
 print(LargeLagoon('input.txt').run_part1())
+print(ExtraLargeLagoon('input.txt').calc_shoelace())
